@@ -16,7 +16,7 @@
     "kra",
     "transactions"
   ],
-  "author": "KRA Analytics Engineering",
+  "author": "Guruprem Saginadham, Sybyl",
   "license": "MIT",
   "devDependencies": {
     "echarts": "^5.5.1",

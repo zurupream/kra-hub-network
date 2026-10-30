@@ -5,7 +5,7 @@
   "type": "visualization",
   "version": "1.0.0",
   "preview": "preview.png",
-  "author": "KRA Analytics Engineering",
+  "author": "Guruprem Saginadham, Sybyl",
   "homepage": "https://github.com/zurupream/kra-hub-network",
   "keywords": "qlik-sense, visualization, echarts, network, graph, kra, transactions, hub",
   "license": "MIT",
