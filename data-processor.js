@@ -88,6 +88,9 @@
       supplierDimTitle: supplierDimTitle,
       buyerDimTitle: buyerDimTitle,
       hasSecondMeasure: Boolean(m1Info),
+      totalHyperCubeRows: (hyperCube && hyperCube.qSize && typeof hyperCube.qSize.qcy === 'number')
+        ? hyperCube.qSize.qcy
+        : (Array.isArray(sampleMatrix) ? sampleMatrix.length : 0),
       measures: [
         {
           index: 0,
@@ -228,7 +231,7 @@
    * @returns {Promise<Array<Array<Object>>>} Promise resolving to matrix rows
    */
   function fetchAllPages(backendApi, hyperCube, maxEdges) {
-    var limit = Math.max(1, Number(maxEdges) || 2500);
+    var limit = Math.min(25000, Math.max(1, Number(maxEdges) || 2500));
     if (!hyperCube) {
       return Promise.resolve([]);
     }
@@ -871,7 +874,7 @@
             edgeLength: [65, 185],
             gravity: 0.08,
             friction: 0.6,
-            layoutAnimation: true
+            layoutAnimation: (model.edges ? model.edges.length <= 3500 : true)
           },
           label: {
             show: true,

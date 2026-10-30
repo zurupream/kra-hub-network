@@ -201,10 +201,10 @@
                 defaultValue: 350
               },
 
-              // 8. Max Edges Limit
+              // 8. Max Edges Limit (Supports up to 25,000 rows via backendApi.getData pagination)
               maxEdges: {
                 type: 'number',
-                label: 'Max Edges Limit',
+                label: 'Max Edges Limit (Max 25,000)',
                 ref: 'props.maxEdges',
                 defaultValue: 2500,
                 min: 50,

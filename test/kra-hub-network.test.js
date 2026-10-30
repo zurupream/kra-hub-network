@@ -517,5 +517,22 @@ test('8. Extension lifecycle: paint, interactive toolbar toggles, Qlik selection
   assert.equal(initCallCount, 1, 'resize() must NOT re-initialize ECharts');
   assert.equal(resizeCallCount, prevResizeCount + 2, 'resize() must call chart.resize()');
 
+  // Verify Qlik Add-ons > Data Handling custom message box display when Calculation Condition is unfulfilled
+  const calcCondLayout = {
+    props: { maxEdges: 25000 },
+    qHyperCube: {
+      qError: { qErrorCode: 7005 },
+      qCalcCondMsg: 'Please select a Tax Period or adjust the Amount slider so routes are under 25,000.'
+    }
+  };
+  await instance.paint(containerEl, calcCondLayout);
+  const emptyOverlay = containerEl.querySelector('.kra-hub-empty');
+  assert.equal(emptyOverlay.style.display, 'flex');
+  assert.ok(
+    emptyOverlay.textContent.includes(
+      'Please select a Tax Period or adjust the Amount slider so routes are under 25,000.'
+    )
+  );
+
   instance.destroy(containerEl);
 });

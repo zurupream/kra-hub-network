@@ -551,8 +551,14 @@
     }
 
     if (dom.legendStatsEl && state.model) {
-      dom.legendStatsEl.textContent =
-        state.model.nodes.length + ' Hubs · ' + state.model.edges.length + ' Routes';
+      var totalRows = (state.model.metadata && state.model.metadata.totalHyperCubeRows) || state.model.edges.length;
+      if (totalRows > state.model.edges.length) {
+        dom.legendStatsEl.textContent =
+          state.model.nodes.length + ' Hubs · ' + state.model.edges.length + ' of ' + totalRows + ' Routes';
+      } else {
+        dom.legendStatsEl.textContent =
+          state.model.nodes.length + ' Hubs · ' + state.model.edges.length + ' Routes';
+      }
     }
   }
 
@@ -585,6 +591,7 @@
      * - 2 Dimensions: Supplier (Outbound) & Buyer (Inbound)
      * - 1..2 Master Measures: Sum of Amount & Count of Activities
      * - qInitialDataFetch: qWidth: 4, qHeight: 2500 (10,000 cells)
+     * - Add-ons > Data Handling support (qCalcCond / qCalcCondition & qSuppressZero)
      */
     initialProperties: {
       qHyperCubeDef: {
@@ -599,7 +606,18 @@
           }
         ],
         qSuppressZero: false,
-        qSuppressMissing: true
+        qSuppressMissing: true,
+        qCalcCond: {
+          qv: ''
+        },
+        qCalcCondition: {
+          qCond: {
+            qv: ''
+          },
+          qMsg: {
+            qv: ''
+          }
+        }
       },
       props: {
         defaultMetric: 'm0',
@@ -682,9 +700,26 @@
       state.settings.showArrows = props.showArrows !== false;
       state.settings.minLabelSize = Number(props.minLabelSize) || 24;
       state.settings.forceRepulsion = Number(props.forceRepulsion) || 350;
-      state.settings.maxEdges = Number(props.maxEdges) || 2500;
+      state.settings.maxEdges = Math.min(25000, Math.max(50, Number(props.maxEdges) || 2500));
 
       var hyperCube = layout ? layout.qHyperCube : null;
+
+      // Smartly display Qlik's native Add-ons > Data Handling > Displayed message when Calculation Condition is not met
+      if (hyperCube && hyperCube.qError) {
+        var customCalcMsg = hyperCube.qCalcCondMsg ||
+          (hyperCube.qCalcCondition && hyperCube.qCalcCondition.qMsg && hyperCube.qCalcCondition.qMsg.qv) ||
+          'Calculation condition is not fulfilled. Please use filters or the slider to narrow down the dataset.';
+        state.dom.emptyOverlayEl.style.display = 'flex';
+        state.dom.emptyOverlayEl.innerHTML = [
+          '<div class="kra-empty-card">',
+          '  <h4>Data Handling</h4>',
+          '  <p>' + escapeHtml(customCalcMsg) + '</p>',
+          '</div>'
+        ].join('');
+        state.chart.clear();
+        return qlik && qlik.Promise ? qlik.Promise.resolve() : Promise.resolve();
+      }
+
       if (
         !hyperCube ||
         !Array.isArray(hyperCube.qDimensionInfo) ||
