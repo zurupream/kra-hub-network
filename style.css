@@ -1,0 +1,427 @@
+/**
+ * @file style.css
+ * @description Stylesheet for KRA Transaction Network (kra-hub-network) Qlik Sense Extension.
+ */
+
+.kra-hub-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f8fafc 75%, #f1f5f9 100%);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #0f172a;
+  box-sizing: border-box;
+  overflow: hidden;
+  user-select: none;
+}
+
+.kra-hub-wrapper *,
+.kra-hub-wrapper *::before,
+.kra-hub-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* Top Interactive Toolbar */
+.kra-hub-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid #e2e8f0;
+  backdrop-filter: blur(8px);
+  z-index: 20;
+}
+
+.kra-toolbar-left,
+.kra-toolbar-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Segmented Toggle Buttons (Metric Switcher & Layout Switcher) */
+.kra-segmented-group {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 2px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+}
+
+.kra-seg-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.kra-seg-btn:hover {
+  color: #0f172a;
+}
+
+.kra-seg-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+}
+
+.kra-metric-switcher .kra-seg-btn.active {
+  background: #1d4ed8;
+  color: #ffffff;
+}
+
+/* Search Input */
+.kra-search-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.kra-search-input {
+  width: 185px;
+  height: 28px;
+  padding: 4px 26px 4px 10px;
+  font-size: 12px;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kra-search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.kra-search-clear {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.kra-search-clear:hover {
+  color: #0f172a;
+}
+
+/* Toolbar Action Buttons */
+.kra-action-btn {
+  appearance: none;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.kra-action-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.kra-action-btn:active {
+  transform: translateY(1px);
+}
+
+/* Main Chart Body & Canvas */
+.kra-hub-Body {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  overflow: hidden;
+}
+
+.kra-hub-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* Bottom-Left 4-Tier Legend Bar */
+.kra-hub-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  font-size: 11px;
+  color: #475569;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.kra-legend-title {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.kra-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kra-legend-item i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.kra-legend-stats {
+  padding-left: 6px;
+  border-left: 1px solid #cbd5e1;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Click-to-Filter Node Popover */
+.kra-node-popover {
+  position: absolute;
+  width: 276px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(15, 23, 42, 0.08);
+  padding: 10px 12px;
+  z-index: 30;
+  animation: kraPopoverFadeIn 0.14s ease-out;
+}
+
+@keyframes kraPopoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.kra-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.kra-popover-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kra-popover-close {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.kra-popover-close:hover {
+  color: #0f172a;
+}
+
+.kra-popover-meta {
+  padding: 7px 0;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.kra-popover-routes {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.kra-popover-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.kra-popover-btn {
+  flex: 1 1 auto;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.kra-popover-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+
+.kra-popover-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Tooltip Inner Content */
+.kra-tooltip {
+  min-width: 230px;
+  line-height: 1.45;
+}
+
+.kra-tooltip-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.kra-tooltip-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  flex-shrink: 0;
+}
+
+.kra-tooltip-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #2563eb;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+}
+
+.kra-tooltip-divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.25);
+  margin: 6px 0;
+}
+
+.kra-tooltip-section {
+  margin-bottom: 6px;
+}
+
+.kra-tooltip-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.kra-tooltip-row-main {
+  font-weight: 600;
+}
+
+.kra-tooltip-label {
+  color: #cbd5e1;
+  font-size: 11.5px;
+}
+
+.kra-tooltip-value {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.kra-tooltip-subrow {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+.kra-tooltip-subrow strong {
+  color: #e2e8f0;
+}
+
+/* Empty State Overlay */
+.kra-hub-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, 0.88);
+  z-index: 15;
+  padding: 20px;
+}
+
+.kra-empty-card {
+  max-width: 400px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.kra-empty-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.kra-empty-card p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.5;
+}

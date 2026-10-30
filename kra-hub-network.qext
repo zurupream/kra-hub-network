@@ -1,0 +1,16 @@
+{
+  "name": "KRA Transaction Network",
+  "description": "Interactive Hub Network visualization for KRA Supplier-to-Buyer transactions using Apache ECharts (force & circular graph, curveness: 0.3, adjacency focus) with native Qlik Master Measures support.",
+  "icon": "extension",
+  "type": "visualization",
+  "version": "1.0.0",
+  "preview": "preview.png",
+  "author": "KRA Analytics Engineering",
+  "homepage": "https://github.com/zurupream/kra-hub-network",
+  "keywords": "qlik-sense, visualization, echarts, network, graph, kra, transactions, hub",
+  "license": "MIT",
+  "repository": "https://github.com/zurupream/kra-hub-network",
+  "dependencies": {
+    "qlik-sense": ">=3.0.x"
+  }
+}

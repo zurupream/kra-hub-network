@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KRA Transaction Network (kra-hub-network) — Qlik Sense Extension Sandbox</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    header span {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .sandbox-main {
+      display: flex;
+      flex: 1 1 auto;
+      overflow: hidden;
+    }
+    .canvas-pane {
+      flex: 1 1 auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    #qlik-extension-mount {
+      flex: 1 1 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      border: 1px solid #334155;
+    }
+    .property-panel {
+      width: 320px;
+      background: #1e293b;
+      border-left: 1px solid #334155;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .property-panel h3 {
+      margin: 0 0 4px 0;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #38bdf8;
+    }
+    .prop-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .prop-field label {
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .prop-field select,
+    .prop-field input[type="number"],
+    .prop-field input[type="text"],
+    .prop-field input[type="color"] {
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    .selection-log {
+      margin-top: auto;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 11.5px;
+      color: #94a3b8;
+    }
+    .selection-log strong {
+      color: #38bdf8;
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>KRA Transaction Network (<code>kra-hub-network</code>)</h1>
+    <span>Qlik Sense Extension Interactive Harness &bull; Apache ECharts Hub Network</span>
+  </header>
+  <div class="sandbox-main">
+    <div class="canvas-pane">
+      <div id="qlik-extension-mount"></div>
+    </div>
+    <aside class="property-panel">
+      <h3>Appearance &gt; Network Settings</h3>
+
+      <div class="prop-field">
+        <label for="prop-defaultMetric">1. Default Active Metric</label>
+        <select id="prop-defaultMetric">
+          <option value="m0">Measure 1 (Amount)</option>
+          <option value="m1">Measure 2 (Activities)</option>
+        </select>
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-hubSizeMode">2. Hub Size Calculation</label>
+        <select id="prop-hubSizeMode">
+          <option value="total">Total (Inbound + Outbound)</option>
+          <option value="outbound">Outbound Only (Supplier)</option>
+          <option value="inbound">Inbound Only (Buyer)</option>
+        </select>
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-colorMode">3. Node Coloring Mode</label>
+        <select id="prop-colorMode">
+          <option value="measureGradient">Color by Active Measure Tiers</option>
+          <option value="palette">ECharts Multi-Color Hub Palette</option>
+          <option value="singleColor">Single Solid Color</option>
+        </select>
+      </div>
+
+      <div class="prop-field" id="single-color-wrap" style="display:none">
+        <label for="prop-singleColorHex">Single Theme Color (Hex)</label>
+        <input type="color" id="prop-singleColorHex" value="#1d4ed8" />
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-defaultLayout">4. Default Layout</label>
+        <select id="prop-defaultLayout">
+          <option value="force">Force (Hub Network)</option>
+          <option value="circular">Circular (Ring)</option>
+        </select>
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-showArrows">5. Show Directional Arrows</label>
+        <select id="prop-showArrows">
+          <option value="true">Shown (true)</option>
+          <option value="false">Hidden (false)</option>
+        </select>
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-minLabelSize">6. Min Bubble Size for Label: <span id="lbl-minLabelSize">24</span></label>
+        <input type="range" id="prop-minLabelSize" min="10" max="60" value="24" />
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-forceRepulsion">7. Force Repulsion / Spacing: <span id="lbl-forceRepulsion">350</span></label>
+        <input type="range" id="prop-forceRepulsion" min="100" max="1000" step="25" value="350" />
+      </div>
+
+      <div class="prop-field">
+        <label for="prop-maxEdges">8. Max Edges Limit</label>
+        <input type="number" id="prop-maxEdges" value="2500" min="50" max="25000" />
+      </div>
+
+      <div class="selection-log" id="selection-log">
+        <strong>Qlik Selection Events:</strong>
+        <div id="selection-status">Click any Hub node to filter Supplier, Buyer, or highlight neighbors.</div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="../lib/echarts.min.js"></script>
+  <script src="../definition.js"></script>
+  <script src="../data-processor.js"></script>
+  <script src="../kra-hub-network.js"></script>
+  <script>
+    (function () {
+      var entities = [
+        'P051A-Safaricom PLC',
+        'P051B-East African Breweries',
+        'P051C-Kenya Power (KPLC)',
+        'P051D-Bamburi Cement Ltd',
+        'P051E-Bidco Africa Ltd',
+        'P051F-Naivas Supermarket',
+        'P051G-Quickmart Ltd',
+        'P051H-Carrefour Majid Al Futtaim',
+        'P051I-TotalEnergies Marketing',
+        'P051J-Vivo Energy Kenya',
+        'P051K-KCB Bank Group',
+        'P051L-Equity Bank Kenya',
+        'P051M-Devki Steel Mills',
+        'P051N-Mombasa Maize Millers',
+        'P051O-Brookside Dairy Ltd',
+        'P051P-Kapa Oil Refineries',
+        'P051Q-Crown Paints Kenya',
+        'P051R-Simba Corp Motors'
+      ];
+
+      // Build realistic KRA Supplier -> Buyer transactions including bidirectional routes
+      var rawPairs = [
+        [0, 5, 184500000, 420],
+        [5, 0, 12400000, 35],
+        [0, 6, 95200000, 260],
+        [0, 7, 112000000, 310],
+        [0, 10, 240000000, 890],
+        [10, 0, 65000000, 140],
+        [0, 11, 198000000, 740],
+        [1, 5, 310000000, 615],
+        [1, 6, 225000000, 490],
+        [1, 7, 178000000, 380],
+        [2, 1, 142000000, 24],
+        [2, 3, 295000000, 36],
+        [2, 4, 188000000, 48],
+        [2, 12, 410000000, 60],
+        [3, 12, 164000000, 115],
+        [12, 3, 89000000, 72],
+        [4, 5, 276000000, 920],
+        [4, 6, 194000000, 680],
+        [4, 7, 156000000, 510],
+        [8, 2, 350000000, 95],
+        [8, 3, 128000000, 110],
+        [9, 1, 96000000, 88],
+        [9, 4, 115000000, 134],
+        [13, 5, 145000000, 540],
+        [13, 6, 132000000, 470],
+        [14, 5, 210000000, 1120],
+        [14, 6, 165000000, 890],
+        [14, 7, 142000000, 760],
+        [15, 5, 118000000, 410],
+        [15, 4, 84000000, 95],
+        [16, 3, 52000000, 64],
+        [17, 0, 78000000, 42],
+        [17, 10, 64000000, 28],
+        [11, 5, 45000000, 190]
+      ];
+
+      function formatKES(n) {
+        return 'KES ' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      var qMatrix = rawPairs.map(function (item) {
+        var sIdx = item[0];
+        var bIdx = item[1];
+        var amt = item[2];
+        var cnt = item[3];
+        return [
+          { qText: entities[sIdx], qElemNumber: sIdx },
+          { qText: entities[bIdx], qElemNumber: bIdx },
+          { qNum: amt, qText: formatKES(amt) },
+          { qNum: cnt, qText: cnt.toLocaleString('en-US') }
+        ];
+      });
+
+      var mockLayout = {
+        props: {
+          defaultMetric: 'm0',
+          hubSizeMode: 'total',
+          colorMode: 'measureGradient',
+          singleColorHex: '#1d4ed8',
+          defaultLayout: 'force',
+          showArrows: true,
+          minLabelSize: 24,
+          forceRepulsion: 350,
+          maxEdges: 2500
+        },
+        qHyperCube: {
+          qSize: { qcx: 4, qcy: qMatrix.length },
+          qDimensionInfo: [
+            { qFallbackTitle: 'Supplier (PIN & Name)' },
+            { qFallbackTitle: 'Buyer (PIN & Name)' }
+          ],
+          qMeasureInfo: [
+            {
+              qFallbackTitle: 'Sum of Amount (KES)',
+              qNumFormat: { qType: 'M', qFmt: 'KES #,##0.00', qThou: ',', qDec: '.' }
+            },
+            {
+              qFallbackTitle: 'Count of Activities',
+              qNumFormat: { qType: 'I', qFmt: '#,##0', qThou: ',' }
+            }
+          ],
+          qDataPages: [
+            {
+              qArea: { qTop: 0, qLeft: 0, qWidth: 4, qHeight: qMatrix.length },
+              qMatrix: qMatrix
+            }
+          ]
+        }
+      };
+
+      var mockContext = Object.create(window.KRAHubNetworkExtension);
+      mockContext.backendApi = {
+        getData: function () {
+          return Promise.resolve([]);
+        },
+        selectValues: function (dimIndex, elemNumbers, toggle) {
+          var dimName = dimIndex === 0 ? 'Supplier (Dim 0)' : 'Buyer (Dim 1)';
+          var names = elemNumbers.map(function (idx) { return entities[idx]; }).join(', ');
+          document.getElementById('selection-status').innerHTML =
+            'Filtered <b>' + dimName + '</b> &rarr; <code>' + names + '</code> (qElemNumber: [' + elemNumbers.join(', ') + '])';
+        }
+      };
+
+      var mountEl = document.getElementById('qlik-extension-mount');
+      mockContext.paint(mountEl, mockLayout);
+
+      window.addEventListener('resize', function () {
+        mockContext.resize(mountEl, mockLayout);
+      });
+
+      function syncProps() {
+        mockLayout.props.defaultMetric = document.getElementById('prop-defaultMetric').value;
+        mockLayout.props.hubSizeMode = document.getElementById('prop-hubSizeMode').value;
+        mockLayout.props.colorMode = document.getElementById('prop-colorMode').value;
+        mockLayout.props.singleColorHex = document.getElementById('prop-singleColorHex').value;
+        mockLayout.props.defaultLayout = document.getElementById('prop-defaultLayout').value;
+        mockLayout.props.showArrows = document.getElementById('prop-showArrows').value === 'true';
+        mockLayout.props.minLabelSize = Number(document.getElementById('prop-minLabelSize').value);
+        mockLayout.props.forceRepulsion = Number(document.getElementById('prop-forceRepulsion').value);
+        mockLayout.props.maxEdges = Number(document.getElementById('prop-maxEdges').value);
+
+        document.getElementById('lbl-minLabelSize').textContent = mockLayout.props.minLabelSize;
+        document.getElementById('lbl-forceRepulsion').textContent = mockLayout.props.forceRepulsion;
+        document.getElementById('single-color-wrap').style.display =
+          mockLayout.props.colorMode === 'singleColor' ? 'flex' : 'none';
+
+        mockContext.paint(mountEl, mockLayout);
+      }
+
+      [
+        'prop-defaultMetric',
+        'prop-hubSizeMode',
+        'prop-colorMode',
+        'prop-singleColorHex',
+        'prop-defaultLayout',
+        'prop-showArrows',
+        'prop-minLabelSize',
+        'prop-forceRepulsion',
+        'prop-maxEdges'
+      ].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', syncProps);
+        document.getElementById(id).addEventListener('change', syncProps);
+      });
+    })();
+  </script>
+</body>
+</html>

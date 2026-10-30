@@ -1,0 +1,25 @@
+{
+  "name": "kra-hub-network",
+  "version": "1.0.0",
+  "description": "Qlik Sense Custom Visualization Extension (KRA Transaction Network) built on Apache ECharts Hub Network (series[0].type = 'graph', curveness: 0.3, emphasis.focus = 'adjacency') with native Qlik Master Measures support.",
+  "main": "kra-hub-network.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test test/kra-hub-network.test.js"
+  },
+  "keywords": [
+    "qlik-sense",
+    "qlik-extension",
+    "echarts",
+    "hub-network",
+    "graph",
+    "kra",
+    "transactions"
+  ],
+  "author": "KRA Analytics Engineering",
+  "license": "MIT",
+  "devDependencies": {
+    "echarts": "^5.5.1",
+    "jsdom": "^24.1.3"
+  }
+}
