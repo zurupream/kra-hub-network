@@ -425,3 +425,25 @@
   color: #475569;
   line-height: 1.5;
 }
+
+
+/* Android & Mobile Responsive Ergonomics */
+.kra-hub-root,
+.kra-hub-toolbar button,
+.kra-node-popover button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  .kra-hub-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+  .kra-node-popover {
+    max-width: calc(100vw - 24px);
+    left: 12px !important;
+    right: 12px !important;
+  }
+}
